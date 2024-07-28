@@ -4,7 +4,7 @@
 set -eo
 
 # Setup default values.
-API_URL="${SITE_URL}/edd-api/github-release"
+API_URL="${SITE_URL}/edd-api/release-download"
 VERSION="${VERSION:-${GITHUB_REF#refs/tags/}}"; VERSION="${VERSION#v}"
 SLUG="${SLUG:-${GITHUB_REPOSITORY#*/}}"
 BUILD_DIR="${HOME}/build-${SLUG}"

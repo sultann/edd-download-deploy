@@ -9,7 +9,6 @@ with the [Easy Digital Downloads](https://easydigitaldownloads.com/) plugin.
   Install [EDD Release Download](edd-release-download.zip) plugin on
   your WordPress site.
 - **Secrets**: You need to add the following secrets to your repository's settings under `Settings > Secrets`.
-	- `SITE_URL` - The URL of your WordPress site.
 	- `API_KEY` - The API key of the Easy Digital Downloads plugin. Create a new API key
 	  from `Downloads > Tools > API Keys` in your WordPress admin dashboard.
 	- `API_TOKEN` - The API token of the Easy Digital Downloads plugin. Create a new API token
