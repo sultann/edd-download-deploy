@@ -6,7 +6,7 @@ with the [Easy Digital Downloads](https://easydigitaldownloads.com/) plugin.
 ## Requirements
 
 - **Install Plugin**:
-  Install [EDD Release Download](https://github.com/sultann/edd-release-download/edd-release-download.zip) plugin on
+  Install [EDD Release Download](edd-release-download.zip) plugin on
   your WordPress site.
 - **Secrets**: You need to add the following secrets to your repository's settings under `Settings > Secrets`.
 	- `SITE_URL` - The URL of your WordPress site.
@@ -50,47 +50,8 @@ Sample `.distignore` file:
 
 ## Example
 
-Create a new workflow file under `.github/workflows` directory. For example, `.github/workflows/release-download.yml`.
+To get started, you will want to copy the contents of one of [these examples](examples) into `.github/workflows/deploy.yml` and push that to your repository
 
-```yaml
-name: Release Download
-
-on:
-	release:
-		types: [published]
-
-jobs:
-	release:
-		runs-on: ubuntu-latest
-		steps:
-			- name: Checkout code
-			  uses: actions/checkout@v3
-
-			# Optional: If you have a build step, you can add it here.
-			- name: Build
-			  run: |
-				  npm install
-				  npm run build
-
-			- name: Release
-			  id: release
-			  uses: sultann/edd-release-download@master
-			  with:
-				  site_url: ${{ secrets.SITE_URL }}
-				  api_key: ${{ secrets.API_KEY }}
-				  api_token: ${{ secrets.API_TOKEN }}
-				  item_id: ${{ secrets.ITEM_ID }}
-
-			# After the release, we also want to create a zip and upload it to the release on GitHub.
-			- name: Upload release asset
-			  uses: actions/upload-release-asset@v1
-			  if: ${{ steps.release.outputs.zip_path != '' }}
-			  with:
-				  upload_url: ${{ github.event.release.upload_url }}
-				  asset_path: ${{ steps.release.outputs.zip_path }}
-				  asset_name: ${{ github.event.repository.name }}.zip
-				  asset_content_type: 'application/zip'
-```
 
 ## License
 
