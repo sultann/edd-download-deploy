@@ -1,0 +1,43 @@
+name: 'EDD Release Download'
+author: 'Sultan Nasir Uddin'
+description: 'Automate releasing EDD downloads using GitHub Actions'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+
+inputs:
+  site_url:
+    description: 'URL of the site where the download is hosted'
+    required: true
+  api_key:
+    description: 'EDD API Key'
+    required: true
+  api_token:
+    description: 'EDD API Token'
+    required: true
+  item_id:
+    description: 'ID of the item'
+    required: true
+  slug:
+    description: 'Slug of the download, defaults to repository name'
+    required: true
+  version:
+    description: 'Version of the update'
+    required: false
+outputs:
+  zip_path:
+    description: 'Path to the zip file'
+    value: ${{ steps.release.outputs.zip_path }}
+runs:
+  using: 'composite'
+  steps:
+    - id: release
+      shell: bash
+      env:
+        SITE_URL: ${{ inputs.site_url }}
+        API_KEY: ${{ inputs.api_key }}
+        API_TOKEN: ${{ inputs.api_token }}
+        ITEM_ID: ${{ inputs.item_id }}
+        SLUG: ${{ inputs.slug }}
+        VERSION: ${{ inputs.version }}
+      run: ${{ github.action_path }}/release.sh
