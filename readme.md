@@ -77,11 +77,11 @@ Sample `.distignore` file:
     # Version of the release. Defaults to the release tag if found otherwise version from the package.json file.
     # Optional.
     version: '1.0.0
-	
+
     # Whether to run the action in dry run mode. Defaults to false. If this is set to true, the action will not deploy, instead outputs the files that would be deployed.
     # Optional.
     dry_run: true
-	
+
     # Slack webhook URL to send notification when deployment is successful.
     # Optional.
     slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
