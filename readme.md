@@ -62,26 +62,26 @@ Sample `.distignore` file:
     # Required.
     site_url: 'https://example.com'
 
-	# EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
-	# Required.
-    api_key: ${{ secrets.EDD_KEY }}
-
-	# EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
-	# Required.
-    api_token: ${{ secrets.EDD_TOKEN }}
-
-	# The name of the zip file to be uploaded. This is optional and defaults to the repository name.
-	# Optional.
+    # EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
+    # Required.
+    api_key: ${{ secrets.EDD_KEY }
+	
+    # EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
+    # Required.
+    api_token: ${{ secrets.EDD_TOKEN }
+	
+    # The name of the zip file to be uploaded. This is optional and defaults to the repository name.
+    # Optional.
     slug: 'my-plugin-slug'
-
+    
     # Version of the release. Defaults to the release tag if found otherwise version from the package.json file.
     # Optional.
-    version: '1.0.0'
-
+    version: '1.0.0
+	
     # Whether to run the action in dry run mode. Defaults to false. If this is set to true, the action will not deploy, instead outputs the files that would be deployed.
     # Optional.
     dry_run: true
-
+	
     # Slack webhook URL to send notification when deployment is successful.
     # Optional.
     slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
@@ -109,9 +109,9 @@ jobs:
           with:
           site_url: 'https://example.com'
           api_key: ${{ secrets.EDD_KEY }}
-		  api_token: ${{ secrets.EDD_TOKEN }}
-		  item_id: 123
-		  slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          api_token: ${{ secrets.EDD_TOKEN }}
+          item_id: 123
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
 ```
 When a new tag is pushed to the repository, the action will build the release and deploy it to your site.
 
