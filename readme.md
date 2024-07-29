@@ -58,8 +58,8 @@ Sample `.distignore` file:
   id: deploy
   uses: sultann/edd-download-deploy@master
   with:
-	# Site URL of your WordPress site.
-	# Required.
+    # Site URL of your WordPress site.
+    # Required.
     site_url: 'https://example.com'
 
 	# EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
