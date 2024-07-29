@@ -1,4 +1,4 @@
-name: 'EDD Release Download'
+name: 'EDD Download Deploy'
 author: 'Sultan Nasir Uddin'
 description: 'Automate releasing EDD downloads using GitHub Actions'
 branding:
@@ -21,18 +21,35 @@ inputs:
   slug:
     description: 'Slug of the download, defaults to repository name'
     required: true
+    default: ${{ github.event.repository.name }}
   version:
     description: 'Version of the update'
     required: false
+  dry_run:
+    description: 'Dry run'
+    required: false
+    default: 'false'
+  slack_webhook:
+    description: 'Slack webhook URL'
+    required: false
+    default: ''
+  slack_message:
+    description: 'Slack message'
+    required: false
+    default: ''
 outputs:
   zip_path:
     description: 'Path to the zip file'
     value: ${{ steps.release.outputs.zip_path }}
+  version:
+    description: 'Release version'
+    value: ${{ steps.deploy.outputs.version }}
 runs:
   using: 'composite'
   steps:
-    - id: release
+    - id: deploy
       shell: bash
+      run: ${{ github.action_path }}/deploy.sh
       env:
         SITE_URL: ${{ inputs.site_url }}
         API_KEY: ${{ inputs.api_key }}
@@ -40,4 +57,26 @@ runs:
         ITEM_ID: ${{ inputs.item_id }}
         SLUG: ${{ inputs.slug }}
         VERSION: ${{ inputs.version }}
-      run: ${{ github.action_path }}/release.sh
+        DRY_RUN: ${{ inputs.dry_run }}
+
+    - name: Set Default Slack Message
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.slack_message }}" ]; then
+          echo "SLACK_MESSAGE=Hello team! Version v${{ steps.deploy.outputs.version }} of ${{ inputs.slug }} has been successfully released! Check it out at ${{ inputs.site_url }}/downloads/${{ inputs.slug }}. Please take a moment to test the new version and share your feedback or report any issues!" >> $GITHUB_ENV
+        else
+          echo "SLACK_MESSAGE=${{ inputs.slack_message }}" >> $GITHUB_ENV
+        fi
+
+    # Post message to Slack channel
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@master
+      if: ${{ success() && inputs.slack_webhook != '' }}
+      env:
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_TITLE: ":loudspeaker: ${{ inputs.slug }} v${{ steps.deploy.outputs.version }} has been released!"
+        SLACK_USERNAME: 'GitHub Actions'
+        SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
+        SLACK_FOOTER: "🎉 Well done, team! Let’s keep the momentum going!"
+        SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
+        MSG_MINIMAL: true

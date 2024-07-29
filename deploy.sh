@@ -3,14 +3,35 @@
 # Will send a curl request to the specified URL with the specified data and file.
 set -eo
 
-# Setup default values.
-API_URL="${SITE_URL}/edd-api/release-download"
-VERSION="${VERSION:-${GITHUB_REF#refs/tags/}}"; VERSION="${VERSION#v}"
+# Uncomment this when debugging the script.
+#set -x
+
+#########################################
+# SETUP DEFAULTS #
+#########################################
+API_URL="${SITE_URL}/edd-api/deploy-download"
 SLUG="${SLUG:-${GITHUB_REPOSITORY#*/}}"
+VERSION="${VERSION:-${GITHUB_REF#refs/tags/}}"; VERSION="${VERSION#v}"
 BUILD_DIR="${HOME}/build-${SLUG}"
 CHANGELOG=""
 
-# Ensure the required environment variables are set.
+# If the version is not set, check if package.json exists and get the version from there otherwise exit.
+if [[ -z "$VERSION" || ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if [ -f ./package.json ]; then
+        VERSION=$(node -p "require('./package.json').version")
+    else
+        VERSION=""
+    fi
+fi
+
+#if changelog.txt exists, read it and store it in the CHANGELOG variable.
+if [[ -f "${GITHUB_WORKSPACE}/changelog.txt" ]]; then
+	CHANGELOG=$(<"${GITHUB_WORKSPACE}/changelog.txt")
+fi
+
+#########################################
+# CHECK IF EVERYTHING IS SET CORRECTLY #
+#########################################
 for var in SITE_URL API_KEY API_TOKEN ITEM_ID VERSION; do
     if [ -z "${!var}" ]; then
         echo "$var is not set, exiting..."
@@ -18,16 +39,15 @@ for var in SITE_URL API_KEY API_TOKEN ITEM_ID VERSION; do
     fi
 done
 
-#if changelog.txt exists, read it and store it in the CHANGELOG variable.
-if [[ -f "${GITHUB_WORKSPACE}/changelog.txt" ]]; then
-	CHANGELOG=$(<"${GITHUB_WORKSPACE}/changelog.txt")
-fi
-
 # Output the download slug
 echo "ℹ︎ SLUG is $SLUG"
 
 # Output the download version
 echo "ℹ︎ VERSION is $VERSION"
+echo "version=$VERSION" >> "${GITHUB_OUTPUT}"
+
+# Output the download changelog only first 100 characters.
+echo "ℹ︎ CHANGELOG is ${CHANGELOG:0:100}"
 
 # Output the download build directory
 echo "ℹ︎ BUILD_DIR is $BUILD_DIR"
@@ -40,6 +60,9 @@ if [[ -e "$GITHUB_WORKSPACE/.distignore" ]]; then
 else
 	rsync -rc "$GITHUB_WORKSPACE/" "$BUILD_DIR" --delete --delete-excluded
 fi
+# Remove empty directories
+find trunk -type d -empty -delete
+echo "✓ Files copied!"
 
 # Zipping files
 echo "➤ Zipping files..."
@@ -49,6 +72,12 @@ zip -r "${GITHUB_WORKSPACE}/${SLUG}.zip" "$SLUG"
 unlink "${GITHUB_WORKSPACE}/${SLUG}"
 echo "zip_path=${GITHUB_WORKSPACE}/${SLUG}.zip" >> "${GITHUB_OUTPUT}"
 echo "✓ Zip file generated!"
+
+# If dry run, then exit.
+if $DRY_RUN; then
+  echo "ℹ︎ Dry run: exiting..."
+  exit 0
+fi
 
 # Release the download
 echo "➤ Releasing download..."
