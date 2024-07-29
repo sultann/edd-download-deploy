@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Checkout code
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
         - name: Build & Deploy
           uses: sultann/edd-download-deploy@master
           with:
