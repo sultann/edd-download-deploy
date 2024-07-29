@@ -65,11 +65,11 @@ Sample `.distignore` file:
     # EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
     # Required.
     api_key: ${{ secrets.EDD_KEY }
-	
+
     # EDD API Key. Generate a new API key from Downloads > Tools > API Keys in your WordPress admin dashboard.
     # Required.
     api_token: ${{ secrets.EDD_TOKEN }
-	
+
     # The name of the zip file to be uploaded. This is optional and defaults to the repository name.
     # Optional.
     slug: 'my-plugin-slug'
