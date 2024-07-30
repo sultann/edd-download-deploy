@@ -61,7 +61,7 @@ else
 	rsync -rc "$GITHUB_WORKSPACE/" "$BUILD_DIR" --delete --delete-excluded
 fi
 # Remove empty directories
-find trunk -type d -empty -delete
+find $BUILD_DIR -type d -empty -delete
 echo "✓ Files copied!"
 
 # Zipping files
