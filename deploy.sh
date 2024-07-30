@@ -9,7 +9,7 @@ set -eo
 #########################################
 # SETUP DEFAULTS #
 #########################################
-API_URL="${SITE_URL}/edd-api/deploy-download"
+API_URL="${SITE_URL}/edd-api/download-deploy"
 SLUG="${SLUG:-${GITHUB_REPOSITORY#*/}}"
 VERSION="${VERSION:-${GITHUB_REF#refs/tags/}}"; VERSION="${VERSION#v}"
 BUILD_DIR="${HOME}/build-${SLUG}"
