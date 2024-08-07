@@ -82,6 +82,11 @@ fi
 # Release the download
 echo "➤ Releasing download..."
 curl -X POST "$API_URL" \
+  -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" \
+	-H "Accept: */*" \
+  -H "Accept-Language: en-US,en;q=0.9" \
+  -H "Connection: keep-alive" \
+  -H "Referer: https://github.com" \
 	-F "key=$API_KEY" \
 	-F "token=$API_TOKEN" \
 	-F "item_id=$ITEM_ID" \
